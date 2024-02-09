@@ -2701,8 +2701,8 @@ func testMultipleExporters(t *testing.T, sb integration.Sandbox) {
 			{
 				Type: imageExporter,
 				Attrs: map[string]string{
-					"name":           target2,
-					"oci-mediatypes": "true",
+					"name": target2,
+					//"oci-mediatypes": "true",
 				},
 			},
 			// Ensure that multiple local exporter destinations are written properly
