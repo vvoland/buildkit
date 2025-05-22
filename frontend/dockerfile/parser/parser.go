@@ -13,6 +13,7 @@ import (
 	"unicode"
 
 	"github.com/moby/buildkit/frontend/dockerfile/command"
+	"github.com/moby/buildkit/frontend/dockerfile/instructions/custom"
 	"github.com/moby/buildkit/frontend/dockerfile/shell"
 	"github.com/pkg/errors"
 )
@@ -229,11 +230,17 @@ func newNodeFromLine(line string, d *directives, comments []string) (*Node, erro
 		return nil, err
 	}
 
-	fn := dispatch[strings.ToLower(cmd)]
+	lcmd := strings.ToLower(cmd)
+	fn := dispatch[lcmd]
 	// Ignore invalid Dockerfile instructions
 	if fn == nil {
-		fn = parseIgnore
+		if custom.Has(lcmd) {
+			fn = parseStringsWhitespaceDelimited
+		} else {
+			fn = parseIgnore
+		}
 	}
+
 	next, attrs, err := fn(args, d)
 	if err != nil {
 		return nil, err

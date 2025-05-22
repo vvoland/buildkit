@@ -78,6 +78,7 @@ func ParseInstructionWithLinter(node *parser.Node, lint *linter.Linter) (v any, 
 		}
 	}()
 	req := newParseRequestFromNode(node)
+
 	switch strings.ToLower(node.Value) {
 	case command.Env:
 		return parseEnv(req)
@@ -142,6 +143,15 @@ func ParseInstructionWithLinter(node *parser.Node, lint *linter.Linter) (v any, 
 	case command.Shell:
 		return parseShell(req)
 	}
+
+	r, err := tryMagicRun(node.Value, req)
+	if err != nil {
+		return nil, err
+	}
+	if r != nil {
+		return r, nil
+	}
+
 	return nil, suggest.WrapError(&UnknownInstructionError{Instruction: node.Value, Line: node.StartLine}, node.Value, allInstructionNames(), false)
 }
 
