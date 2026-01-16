@@ -450,3 +450,13 @@ target "govulncheck" {
   no-cache-filter = ["run"]
   output = ["${DESTDIR}"]
 }
+
+target "dckrfile" {
+  inherits = ["frontend-image"]
+  output = ["type=image,oci-artifact=true"]
+  tags = ["vlnd/dckrfile", "pawelgronowski465/dckrfile"]
+  platforms = [
+    "linux/amd64",
+    "linux/arm64",
+  ]
+}
